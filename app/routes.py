@@ -71,9 +71,14 @@ def parse_document(text):
     response.raise_for_status()
     result = response.json()
     output = result.get("message", {}).get("content", "").strip()
+    print("response:")
+    print(output)
     if output.startswith("```"):
         output = output.strip("`")
         output = output.replace("json", "").strip()
+    final = json.loads(output)
+    print("json output:")
+    print("final")
     return json.loads(output)
 
 @main.route("/api/scan", methods=["POST"])
@@ -84,6 +89,4 @@ def scan_document():
     text = extract_document_text(f)
     parsed = parse_document(text)
     return jsonify(parsed)
-
-
 
