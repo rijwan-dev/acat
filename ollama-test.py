@@ -1,7 +1,6 @@
 import requests
 import json
 
-# Ollama API endpoint
 url = "http://localhost:11434/api/chat"
 
 # Define the JSON schema instruction
@@ -50,7 +49,6 @@ The JSON must follow this structure:
 }
 """
 
-# Example raw OCR text (replace with your actual OCR output)
 ocr_text = """
 AX-416667
 AADHAAR XXXX XXXX 7758
@@ -80,9 +78,8 @@ Issued: 07/06/2023
 Dated: 16/05/2023
 """
 
-# Build the request payload
 payload = {
-    "model": "llama3.1",   # change to the model you have installed
+    "model": "llama3.1",   #  model selection
     "messages": [
         {"role": "system", "content": json_schema},
         {"role": "user", "content": ocr_text}
