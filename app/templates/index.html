@@ -512,10 +512,28 @@
       return findings;
     }
 
-    // Simulated scanning pipeline per file
+    async function sendToServer(file) {
+      try {
+        const fd = new FormData();
+        fd.append("file", file, file.name);
+        const resp = await fetch("/api/scan", {
+          method: "POST",
+          body: fd
+        });
+        if (!resp.ok) {
+          const txt = await resp.text();
+          throw new Error(`Server error ${resp.status}: ${txt}`);
+        }
+        return await resp.json();
+      } catch (err) {
+        console.error("sendToServer error:", err);
+        return { error: String(err) };
+      }
+    }
+
     async function scanFile(file) {
       file._tag.textContent = "Hashing...";
-      file._progressBar.style.width = "15%";
+      file._progressBar.style.width = "10%";
       const errors = validateFile(file);
       if (errors.length) {
         file._tag.textContent = "Rejected";
@@ -523,39 +541,50 @@
         file._progressBar.style.width = "100%";
         return { name: file.name, status: "rejected", errors };
       }
-
-      // Name checks
       const suspicious = checkNameSuspicion(file.name);
       if (suspicious.length) {
         file._tag.textContent = "Suspicious name";
         file._tag.style.color = "#f59e0b";
       }
-
-      // Hash
       const hash = await sha256(file);
-      file._progressBar.style.width = "45%";
-
-      // Lightweight content flags (only for text/plain)
-      const text = await extractText(file);
+      file._progressBar.style.width = "35%";
+      const localText = await extractText(file);
       let piiFindings = [];
-      if (text) {
+      if (localText) {
         file._tag.textContent = "Content check";
-        file._progressBar.style.width = "70%";
-        piiFindings = detectPII(text);
+        file._progressBar.style.width = "45%";
+        piiFindings = detectPII(localText);
       }
-
-      // Finalize
-      file._progressBar.style.width = "100%";
+      file._tag.textContent = "Uploading to server (OCR)…";
+      file._progressBar.style.width = "60%";
+      const serverResp = await sendToServer(file);
+      if (serverResp?.error) {
+        file._tag.textContent = "Server error";
+        file._tag.style.color = "#fca5a5";
+        file._progressBar.style.width = "100%";
+        return {
+          name: file.name,
+          status: "server_error",
+          error: serverResp.error,
+          hash,
+          suspiciousName: suspicious.map(r => r.toString()),
+          pii: piiFindings
+        };
+      }
+      file._progressBar.style.width = "95%";
       file._tag.textContent = "Scanned";
       file._tag.style.color = "#86efac";
-
+      file._progressBar.style.width = "100%";
       return {
         name: file.name,
         size: file.size,
         type: file.type,
         hash,
-        suspiciousName: suspicious.map(rx => rx.toString()),
-        pii: piiFindings
+        suspiciousName: suspicious.map(r => r.toString()),
+        pii: piiFindings,
+        ocr_text: serverResp?.ocr_text ?? null,
+        fields: serverResp?.fields ?? null,
+        ai_verdict: serverResp?.ai_verdict ?? null
       };
     }
 
@@ -665,6 +694,12 @@
       for (const file of state.files) {
         const res = await scanFile(file);
         results.push(res);
+        alert(
+          "File: " + res.name +
+          "\n\nOCR Text:\n" + (res.ocr_text || "(no OCR result)") +
+          "\n\nExtracted Fields:\n" + JSON.stringify(res.fields || {}, null, 2) +
+          "\n\nAI Verdict:\n" + JSON.stringify(res.ai_verdict || {}, null, 2)
+        );
         await new Promise(r => setTimeout(r, 120)); // small delay for UX
       }
       state.results = results;
