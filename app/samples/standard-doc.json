@@ -1,0 +1,69 @@
+{
+  "University": "",
+  "Course": "",
+  "Semester": "",
+  "Examination": "",
+  "Student": {
+    "Name": "",
+    "RegNo": int,
+    "RollNo": int,
+    "SerialNo": int,
+    "FatherName": "",
+    "MotherName": ""
+  },
+  "Subjects": [
+    {
+      "Code": "",
+      "Name": "",
+      "Theory": { "Max": int, "Min": int, "Secured": int },
+      "Practical": null
+    },
+    {
+      "Code": "",
+      "Name": "",
+      "Theory": { "Max": int, "Min": int, "Secured": int },
+      "Practical": { "Max": int, "Min": int, "Secured": int }
+    },
+    {
+      "Code": "",
+      "Name": "",
+      "Theory": { "Max": int, "Min": int, "Secured": int },
+      "Practical": null
+    },
+    {
+      "Code": "",
+      "Name": "",
+      "Theory": { "Max": int, "Min": int, "Secured": int },
+      "Practical": null
+    },
+    {
+      "Code": "",
+      "Name": "",
+      "Theory": { "Max": int, "Min": int, "Secured": int },
+      "Practical": { "Max": int, "Min": int, "Secured": int }
+    },
+    {
+      "Code": "",
+      "Name": "",
+      "Theory": { "Max": int, "Min": int, "Secured": int },
+      "Practical": null
+    },
+    {
+      "Code": "",
+      "Name": "",
+      "Theory": { "Max": int, "Min": int, "Secured": int },
+      "Practical": { "Max": int, "Min": int, "Secured": int }
+    },
+    {
+      "Code": "",
+      "Name": "",
+      "Theory": { "Max": int, "Min": int, "Secured": int },
+      "Practical": null
+    }
+  ],
+  "Result": {
+    "Status": "",
+    "TotalMarksObtained": int
+  },
+  "Date": "DD/MM/YYYY",
+}
