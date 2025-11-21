@@ -18,10 +18,11 @@ def extract_fields(text):
     }
 
 def extract_document_text(file):
-    filename = file.filename.lower()
+    filename = getattr(file, "name", "").lower()
+    # filename = file.filename.lower()
     file.seek(0)
     data = file.read()
-    print("file name:", file.filename)
+    print("file name:", filename)
     print("file size:", len(data), "bytes")
     try:
         if filename.endswith(".pdf"):
