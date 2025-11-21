@@ -154,9 +154,6 @@ def parse_document(text):
     if output.startswith("```"):
         output = output.strip("`")
         output = output.replace("json", "").strip()
-    # final = json.loads(output)
-    # print("json output:")
-    # print(final)
     return json.loads(output)
 
 @main.route("/api/scan", methods=["POST"])

@@ -1,6 +1,7 @@
 import pytesseract
 import io
 import re
+import os
 import subprocess
 
 from docx import Document
