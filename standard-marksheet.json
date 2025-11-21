@@ -1,0 +1,78 @@
+{
+  "serial_no": "AX-416667",
+  "aadhaar_no": "XXXX XXXX 7758",
+  "enrolment_no": "22-1-RO-627-0069",
+  "roll_no": "1023365178",
+  "board": "Board of School Education Haryana",
+  "certification": "ISO 9001:2015 CERTIFIED",
+  "exam": "Secondary Examination",
+  "certificate_type": "Certificate of Qualification cum Mark Sheet",
+  "student": {
+    "name": "RAJAT",
+    "father_name": "RAGHBIR",
+    "mother_name": "SUMAN",
+    "date_of_birth": "01/05/2007",
+    "school": "RADHA KRISHAN MEMORIAL SCHOOL, FARMANA (ROHTAK)"
+  },
+  "exam_details": {
+    "month_year": "MARCH - 2023",
+    "location": "Bhiwani"
+  },
+  "marks": [
+    {
+      "subject": "HINDI",
+      "marks_obtained": 86,
+      "minimum_pass_marks": 33,
+      "maximum_marks": 100,
+      "grade": "A+",
+      "grade_point": 9
+    },
+    {
+      "subject": "ENGLISH",
+      "marks_obtained": 68,
+      "minimum_pass_marks": 33,
+      "maximum_marks": 100,
+      "grade": "B++",
+      "grade_point": 7
+    },
+    {
+      "subject": "MATHEMATICS",
+      "marks_obtained": 98,
+      "minimum_pass_marks": 33,
+      "maximum_marks": 100,
+      "grade": "A++",
+      "grade_point": 10
+    },
+    {
+      "subject": "SOCIAL SCIENCE",
+      "marks_obtained": 80,
+      "minimum_pass_marks": 33,
+      "maximum_marks": 100,
+      "grade": "A",
+      "grade_point": 8
+    },
+    {
+      "subject": "SCIENCE",
+      "marks_obtained": 82,
+      "minimum_pass_marks": 33,
+      "maximum_marks": 100,
+      "grade": "A",
+      "grade_point": 8
+    },
+    {
+      "subject": "SANSKRIT",
+      "marks_obtained": 87,
+      "minimum_pass_marks": 33,
+      "maximum_marks": 100,
+      "grade": "A",
+      "grade_point": 8
+    }
+  ],
+  "total_marks_obtained": 433,
+  "total_maximum_marks": 500,
+  "gpa": 8.60,
+  "general_awareness_life_skills_grade": "VERY GOOD",
+  "co_curricular_activity_grade": "A+",
+  "date_issued": "07/06/2023",
+  "date_dated": "16/05/2023"
+}

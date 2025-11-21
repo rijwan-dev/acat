@@ -1,7 +1,7 @@
 import requests
 import json
 
-url = "http://localhost:11434/api/chat"
+url = "http://192.168.0.118:11500/api/chat"
 
 # Define the JSON schema instruction
 json_schema = """
@@ -79,7 +79,7 @@ Dated: 16/05/2023
 """
 
 payload = {
-    "model": "llama3.1",   #  model selection
+    "model": "llama3",   #  model selection
     "messages": [
         {"role": "system", "content": json_schema},
         {"role": "user", "content": ocr_text}
