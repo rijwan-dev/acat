@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Verify Document</title>
+  <link rel="stylesheet" href="static/verify.css"/>
+</head>
+<body>
+  <div class="container">
+    <h2 class="page-title">Verify Document</h2>
+    <div class="upload-section">
+      <div class="upload-area" id="uploadArea">
+        <svg width="60" height="60" fill="none"><rect width="60" height="60" rx="16" fill="#e8feec"/><path d="M30 12v28m0 0-8-8m8 8 8-8" stroke="#36c561" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><rect x="14" y="40" width="32" height="8" rx="4" fill="#e7fbe8"/></svg>
+        <p id="uploadText">Drag & drop your document here, or click to choose file</p>
+        <input type="file" id="fileInput" class="file-input" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" />
+        <div id="filePreview"></div>
+      </div>
+      <div class="or-separator">or</div>
+      <button class="scan-btn" onclick="openScanModal()">
+        <span>📷</span> Scan Document (Camera)
+      </button>
+      <button class="verify-btn" id="verifyBtn" disabled>Verify</button>
+    </div>
+    <div class="progress-container" style="display:none;">
+      <div class="progress-bar">
+        <div class="progress-bar-inner" id="progressInner"></div>
+      </div>
+      <div id="progressText"></div>
+    </div>
+    <div class="result-container" id="resultBox" style="display:none;">
+      <h3>Verification Result</h3>
+      <div id="resultMessage"></div>
+    </div>
+  </div>
+  <!-- Camera Modal -->
+  <div class="scan-modal" id="scanModal" style="display:none;">
+    <div class="scan-modal-content">
+      <span class="close" onclick="closeScanModal()">&times;</span>
+      <h3>Scan Document</h3>
+      <video id="video" autoplay playsinline></video>
+      <canvas id="canvas" style="display:none;"></canvas>
+      <button id="captureBtn" class="scan-btn">Capture</button>
+      <button id="useBtn" class="verify-btn" style="display:none;">Use This Image</button>
+      <button class="close-cam" onclick="closeScanModal()">Cancel</button>
+    </div>
+  </div>
+  <script src="static/verify.js"></script>
+</body>
+</html>
