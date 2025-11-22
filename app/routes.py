@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, current_app
 
 import requests
+import os
 import json
 
 from .services.ocr import extract_document_text, extract_fields
@@ -153,9 +154,6 @@ def parse_document(text):
     if output.startswith("```"):
         output = output.strip("`")
         output = output.replace("json", "").strip()
-    # final = json.loads(output)
-    # print("json output:")
-    # print(final)
     return json.loads(output)
 
 @main.route("/api/scan", methods=["POST"])
@@ -163,7 +161,14 @@ def scan_document():
     f = request.files.get("file")
     if not f:
         return jsonify({"error": "No file uploaded"}), 400
-    text = extract_document_text(f)
+    
+    save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], f.filename)
+    f.seek(0)
+    f.save(save_path)
+
+    with open(save_path, "rb") as stored_file:
+        text = extract_document_text(stored_file)
     parsed = parse_document(text)
     return jsonify(parsed)
+
 
