@@ -1,0 +1,213 @@
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+  background: #270078;
+  overflow: hidden;
+}
+
+.login-bg {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-bg-animated {
+  pointer-events: none;
+  position: absolute;
+  width: 140vw;
+  height: 140vh;
+  left: -20vw;
+  top: -20vh;
+  z-index: 1;
+  mix-blend-mode: lighten;
+  background: radial-gradient(circle 60vw at 20vw 30vh, #8077fa99 0%, transparent 80%),
+              radial-gradient(circle 80vw at 80vw 70vh, #59e4f599 0%, transparent 80%);
+  animation: bgmove 12s infinite alternate cubic-bezier(0.45,0.25,0.45,0.80);
+}
+
+@keyframes bgmove {
+  0% {
+    background-position: 0% 0%, 80% 80%;
+  }
+  100% {
+    background-position: 30% 70%, 70% 60%;
+  }
+}
+
+.login-card {
+  position: relative;
+  min-width: 400px;
+  max-width: 90vw;
+  z-index: 3;
+  background: rgba(255,255,255,0.97);
+  padding: 2.5rem 2.2rem 2rem 2.2rem;
+  border-radius: 1.3rem;
+  box-shadow: 0 10px 32px 0 rgba(39, 0, 120, 0.2);
+  animation: floatin 1s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes floatin {
+  from {
+    transform: translateY(80px) scale(0.88);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.login-title {
+  margin-bottom: 1.7rem;
+  font-size: 2.2rem;
+  text-align: center;
+  color: #2b1a6c;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  margin-bottom: 1.4rem;
+}
+
+.login-input-group {
+  width: 100%;
+}
+
+.login-input {
+  width: 90%;
+  padding: 0.85rem 1rem;
+  border-radius: 0.7rem;
+  border: 1.5px solid #ddd;
+  outline: none;
+  font-size: 1.09rem;
+  transition: border 0.2s, box-shadow 0.2s;
+  background: #fafbff;
+  box-shadow: 0 2px 8px -2px #e0e0f8;
+}
+.login-input:focus {
+  border: 1.5px solid #5940ff;
+  box-shadow: 0 2px 16px -2px #d0d0fa88;
+}
+
+.login-btn {
+  background: linear-gradient(98deg, #5940ff 30%, #8077fa 85%);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  padding: 0.88rem 1rem;
+  border-radius: 0.7rem;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.08s;
+  margin-top: 0.3rem;
+  font-size: 1.06rem;
+  box-shadow: 0 2px 12px -2px #8077fa88;
+}
+.login-btn:hover,
+.login-btn:focus {
+  background: linear-gradient(98deg, #523af9 45%, #59e4f5 110%);
+  color: #fff;
+  transform: scale(1.04);
+}
+
+.login-options {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.login-link {
+  background: none;
+  border: none;
+  color: #564edc;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.18s;
+  text-decoration: underline;
+  padding: 0;
+}
+.login-link:hover {
+  color: #2b1a6c;
+}
+.separator {
+  color: #888;
+  font-size: 1.1rem;
+  margin: 0 0.2rem;
+  user-select: none;
+}
+
+/* Forgot modal styles */
+.forgot-modal {
+  position: fixed;
+  left: 0; top: 0; right: 0; bottom: 0;
+  z-index: 10;
+  background: rgba(56, 53, 88, 0.18);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(2px);
+  animation: modalFade .28s cubic-bezier(.6,-0.14,.41,1.22);
+}
+@keyframes modalFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.forgot-modal-content {
+  background: #fff;
+  border-radius: 1rem;
+  min-width: 340px;
+  max-width: 90vw;
+  padding: 2rem 2rem 1.1rem 2rem;
+  box-shadow: 0 8px 32px 0 rgba(56, 53, 88, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  text-align: center;
+  position: relative;
+  animation: modalIn 0.43s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+@keyframes modalIn {
+  0% {
+    transform: scale(0.89) translateY(70px);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+.close {
+  position: absolute;
+  display: block;
+  right: 1.2rem;
+  top: 1rem;
+  font-size: 1.6rem;
+  color: #bbb;
+  cursor: pointer;
+  background: none;
+  border: none;
+  outline: none;
+  z-index: 2;
+  transition: color 0.18s;
+}
+.close:hover {
+  color: #5e60ce;
+}
+
+@media (max-width: 600px) {
+  .login-card, .forgot-modal-content {
+    min-width: 98vw !important;
+    padding: 1.3rem 0.6rem;
+  }
+}

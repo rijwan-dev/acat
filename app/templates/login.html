@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Modern Login Page</title>
+  <link rel="stylesheet" href="static/login.css"/>
+</head>
+<body>
+  <h1 class="title-main">Academic Credit Authenticity Tester (ACAT)</h1>
+  <div class="login-bg">
+    <div class="login-bg-animated"></div>
+    <div class="login-card" id="loginCard">
+      <h2 class="login-title">Sign In</h2>
+      <form class="login-form" autocomplete="off" onsubmit="return false;">
+        <div class="login-input-group">
+          <input class="login-input" type="text" placeholder="User ID" id="userID" required />
+        </div>
+        <div class="login-input-group">
+          <input class="login-input" type="password" placeholder="Password" id="password" required />
+        </div>
+        <button class="login-btn" id="loginBtn" type="submit">Login</button>
+      </form>
+      <div class="login-options">
+        <button class="login-link" onclick="openForgotModal()">Forgot Password?</button>
+        <span class="separator">|</span>
+        <button class="login-link" onclick="registerAccount()">Register New Account</button>
+      </div>
+    </div>
+    <div class="forgot-modal" id="forgotModal" style="display:none;">
+      <div class="forgot-modal-content">
+        <span class="close" onclick="closeForgotModal()">&times;</span>
+        <h3>Forgot Password</h3>
+        <p>
+          No worries! Enter your User ID to receive reset instructions.
+        </p>
+        <input class="login-input" placeholder="User ID" id="forgotUserID"/>
+        <button class="login-btn" style="width:100%;" onclick="sendResetLink()">Send Reset Link</button>
+        <div id="resetMessage" style="margin-top:.5em;"></div>
+      </div>
+    </div>
+  </div>
+  <script src="static/login.js"></script>
+</body>
+</html>
