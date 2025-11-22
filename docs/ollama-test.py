@@ -7,79 +7,107 @@ url = "http://192.168.0.118:11500/api/chat"
 json_schema = """
 You are to output ONLY valid JSON.
 Do not include explanations, comments, or extra text.
+there may be some error which you have to guess and fix.
 The JSON must follow this structure:
-
 {
-  "serial_no": "",
-  "aadhaar_no": "",
-  "enrolment_no": "",
-  "roll_no": "",
-  "board": "",
-  "certification": "",
-  "exam": "",
-  "certificate_type": "",
-  "student": {
-    "name": "",
-    "father_name": "",
-    "mother_name": "",
-    "date_of_birth": "",
-    "school": ""
+  "University": "",
+  "Course": "",
+  "Semester": "",
+  "Examination": "",
+  "Student": {
+    "Name": "",
+    "RegNo": int,
+    "RollNo": int,
+    "SerialNo": int,
+    "FatherName": "",
+    "MotherName": ""
   },
-  "exam_details": {
-    "month_year": "",
-    "location": ""
-  },
-  "marks": [
+  "Subjects": [
     {
-      "subject": "",
-      "marks_obtained": 0,
-      "minimum_pass_marks": 0,
-      "maximum_marks": 0,
-      "grade": "",
-      "grade_point": 0
+      "Code": "",
+      "Name": "",
+      "Theory": { "Max": int, "Min": int, "Secured": int },
+      "Practical": null
+    },
+    {
+      "Code": "",
+      "Name": "",
+      "Theory": { "Max": int, "Min": int, "Secured": int },
+      "Practical": { "Max": int, "Min": int, "Secured": int }
+    },
+    {
+      "Code": "",
+      "Name": "",
+      "Theory": { "Max": int, "Min": int, "Secured": int },
+      "Practical": null
+    },
+    {
+      "Code": "",
+      "Name": "",
+      "Theory": { "Max": int, "Min": int, "Secured": int },
+      "Practical": null
+    },
+    {
+      "Code": "",
+      "Name": "",
+      "Theory": { "Max": int, "Min": int, "Secured": int },
+      "Practical": { "Max": int, "Min": int, "Secured": int }
+    },
+    {
+      "Code": "",
+      "Name": "",
+      "Theory": { "Max": int, "Min": int, "Secured": int },
+      "Practical": null
+    },
+    {
+      "Code": "",
+      "Name": "",
+      "Theory": { "Max": int, "Min": int, "Secured": int },
+      "Practical": { "Max": int, "Min": int, "Secured": int }
+    },
+    {
+      "Code": "",
+      "Name": "",
+      "Theory": { "Max": int, "Min": int, "Secured": int },
+      "Practical": null
     }
   ],
-  "total_marks_obtained": 0,
-  "total_maximum_marks": 0,
-  "gpa": 0.0,
-  "general_awareness_life_skills_grade": "",
-  "co_curricular_activity_grade": "",
-  "date_issued": "",
-  "date_dated": ""
-}
-"""
+  "Result": {
+    "Status": "",
+    "TotalMarksObtained": int
+  },
+  "Date": "DD/MM/YYYY",
+}"""
 
 ocr_text = """
-AX-416667
-AADHAAR XXXX XXXX 7758
-Enrolment No: 22-1-RO-627-0069
-Roll No: 1023365178
-Board of School Education Haryana
-ISO 9001:2015 CERTIFIED
-Secondary Examination
-Certificate of Qualification cum Mark Sheet
-Name: RAJAT
-Father: RAGHBIR
-Mother: SUMAN
-DOB: 01/05/2007
-School: RADHA KRISHAN MEMORIAL SCHOOL, FARMANA (ROHTAK)
-Exam: MARCH - 2023, Bhiwani
-Subjects:
-Hindi 86/100 Grade A+ GP 9
-English 68/100 Grade B++ GP 7
-Mathematics 98/100 Grade A++ GP 10
-Social Science 80/100 Grade A GP 8
-Science 82/100 Grade A GP 8
-Sanskrit 87/100 Grade A GP 8
-Total: 433/500 GPA 8.60
-General Awareness Life Skills: VERY GOOD
-Co-Curricular Activity: A+
-Issued: 07/06/2023
-Dated: 16/05/2023
+Maharshi Dayanand University, Rohtak
+BACHELOR OF TECHNOLOGY (COMPUTER SCIENCE & DESIGN)
+Statement of Marks/Grade 1ST SEMESTER
+DECEMBER 2024 Examination
+Reg No.: 2412201869
+Name: SHIV PANDIT
+Father's Name: RAMESHWAR PANDIT
+Mother's Name: MEENA KUMARI
+Serial No.: 34382872
+Roll No.: 8049571
+S.N. Sub Code/Course Subjects/Papers mheory Practical
+ID Max | Min | Sec | Max | Min | Sec
+1. BSC-CH101G |CHEMISTRY-1 75 30 38
+2. BSC-CH102G |CHEMISTRY LAB-I 75 30 47 | 25 | 10 | 24
+3. BSC-CH103G |MATHEMATICS-I 75 30 58
+4. BSC-CH104G = |PROGRAMMING 75 30 46
+3. BSC-CH105G = |PROGRAMMING LAB-I 75 30 68 | 25 |} 10 | 23
+6. BSC-CH106G |WORKSHOP TECHNOLOGY | 75 30 49
+7. BSC-CH107G |MANUFACTURING LAB-I 75 30 56 | 25 | 10 | 23
+8. BSC-CH108G |ENGLISH 75 30 70
+RESULT : PASSED AND HAS OBTAINED FOUR HUNDRED NINETY FOUR MARK
+Dated: 24/03/2025
+THIS [IS FOR DEMONSTRATION PURPOSE ONLY
 """
 
+
 payload = {
-    "model": "llama3",   #  model selection
+    "model": "llama3.1",   #  model selection
     "messages": [
         {"role": "system", "content": json_schema},
         {"role": "user", "content": ocr_text}
