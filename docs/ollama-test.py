@@ -1,7 +1,7 @@
 import requests
 import json
 
-url = "http://192.168.0.118:11500/api/chat"
+url = "http://172.20.213.4:11500/api/chat"
 
 # Define the JSON schema instruction
 json_schema = """
