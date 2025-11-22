@@ -38,6 +38,7 @@ def extract_document_text(file):
         elif filename.endswith((".jpg", ".jpeg", ".png")):
             img = Image.open(io.BytesIO(data))
             text = pytesseract.image_to_string(img)
+            print(text)
             return text.strip()
 
         elif filename.endswith(".pdf"):
