@@ -7,6 +7,9 @@ body, html {
   overflow: hidden;
 }
 
+.title-main{
+    text-align: center;
+}
 .login-bg {
   position: absolute;
   width: 100vw;
@@ -210,4 +213,38 @@ body, html {
     min-width: 98vw !important;
     padding: 1.3rem 0.6rem;
   }
+}
+
+.warning {
+  background: linear-gradient(95deg, #ffe066 70%, #ffb141 100%);
+  color: #2b1900;
+  font-size: 1rem;
+  font-weight: 600;
+  border-left: 7px solid #ff9402;
+  padding: 1.2em 1em 1.2em 2.3em;
+  border-radius: 0.8em;
+  margin: 2em auto 1em auto;
+  max-width: 450px;
+  box-shadow: 0 4px 18px 0 #ffb14149;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-30px) scale(0.98);
+  animation: warning-pop-in 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards, warning-wiggle 0.38s 0.82s cubic-bezier(.41,-0.41,.82,1.33) 1;
+}
+
+@keyframes warning-pop-in {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1.04);
+  }
+}
+
+@keyframes warning-wiggle {
+  0% { transform: scale(1.04) translateX(0);}
+  16% { transform: scale(1.03) translateX(6px);}
+  34% { transform: scale(1.02) translateX(-4px);}
+  56% { transform: scale(1.03) translateX(3px);}
+  74% { transform: scale(1.01) translateX(-2px);}
+  100% { transform: scale(1) translateX(0);}
 }

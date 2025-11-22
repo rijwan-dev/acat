@@ -2,718 +2,117 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Modern Document Upload & Scan</title>
-  <style>
-    :root {
-      --bg: #0f172a;
-      --card: #111827;
-      --muted: #6b7280;
-      --text: #e5e7eb;
-      --accent: #22c55e;
-      --accent-2: #3b82f6;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --border: #1f2937;
-    }
-
-    * { box-sizing: border-box; }
-    html, body {
-      height: 100%;
-      background: radial-gradient(1200px 600px at 20% -10%, #0b1023 0%, var(--bg) 60%);
-      color: var(--text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
-      margin: 0;
-    }
-
-    .container {
-      max-width: 920px;
-      margin: 40px auto;
-      padding: 24px;
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .logo {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      background: linear-gradient(135deg, var(--accent-2), var(--accent));
-      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.25);
-    }
-
-    .title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: 0.2px;
-    }
-
-    .card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005));
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
-      overflow: hidden;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 24px;
-    }
-
-    .section {
-      padding: 20px;
-      border-top: 1px solid var(--border);
-    }
-    .section:first-child { border-top: none; }
-
-    .upload-area {
-      position: relative;
-      border: 1.5px dashed #334155;
-      border-radius: 14px;
-      padding: 28px;
-      background: rgba(17, 24, 39, 0.35);
-      backdrop-filter: blur(6px);
-      transition: 180ms border-color ease, 180ms transform ease, 180ms background ease;
-      cursor: pointer;
-      min-height: 180px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-    .upload-area:hover {
-      border-color: #3b82f6;
-      transform: translateY(-1px);
-      background: rgba(17, 24, 39, 0.5);
-    }
-    .upload-area.drag-over {
-      border-color: var(--accent);
-      box-shadow: inset 0 0 0 2px rgba(34, 197, 94, 0.3);
-      background: rgba(17, 24, 39, 0.6);
-    }
-
-    .upload-content {
-      max-width: 520px;
-    }
-
-    .upload-actions {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      justify-content: center;
-      margin-top: 16px;
-    }
-
-    .btn {
-      appearance: none;
-      border: none;
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-weight: 600;
-      transition: 180ms transform ease, 180ms background-color ease, 180ms box-shadow ease;
-      cursor: pointer;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, #1d4ed8, #3b82f6);
-      color: white;
-      box-shadow: 0 10px 18px rgba(59, 130, 246, 0.35);
-    }
-    .btn-primary:hover { transform: translateY(-1px); }
-    .btn-secondary {
-      background: #0b1224;
-      color: var(--text);
-      border: 1px solid #1f2a44;
-    }
-    .btn-secondary:hover { transform: translateY(-1px); }
-
-    .hint {
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .file-list {
-      margin-top: 18px;
-      display: grid;
-      gap: 10px;
-    }
-
-    .file-item {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 12px;
-      align-items: center;
-      padding: 10px 12px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: rgba(17, 24, 39, 0.35);
-    }
-
-    .file-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      display: grid;
-      place-items: center;
-      font-weight: 800;
-      color: white;
-      background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
-    }
-
-    .file-name {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .file-meta {
-      color: var(--muted);
-      font-size: 0.85rem;
-    }
-
-    .actions {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .tag {
-      font-size: 0.76rem;
-      padding: 4px 8px;
-      border-radius: 999px;
-      border: 1px solid #334155;
-      color: #93c5fd;
-      background: rgba(59, 130, 246, 0.12);
-    }
-
-    .progress {
-      width: 100%;
-      height: 8px;
-      border-radius: 999px;
-      background: #0b1224;
-      border: 1px solid #1f2a44;
-      overflow: hidden;
-      margin-top: 10px;
-    }
-    .progress > span {
-      display: block;
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      transition: width 220ms ease;
-    }
-
-    .scan-panel {
-      border-left: 1px solid var(--border);
-      padding-left: 12px;
-    }
-
-    .scan-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .status {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 600;
-    }
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: #9ca3af;
-      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.02);
-    }
-    .dot.running { background: var(--accent-2); }
-    .dot.clean { background: var(--accent); }
-    .dot.warn { background: var(--warning); }
-    .dot.danger { background: var(--danger); }
-
-    .list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .list-item {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 12px;
-      background: rgba(17, 24, 39, 0.35);
-    }
-
-    .list-item h4 { margin: 0 0 6px 0; font-size: 0.95rem; }
-    .list-item p { margin: 0; color: var(--muted); font-size: 0.9rem; }
-
-    .footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      padding: 16px 20px;
-      border-top: 1px solid var(--border);
-      background: rgba(255,255,255,0.02);
-      border-bottom-left-radius: 16px;
-      border-bottom-right-radius: 16px;
-    }
-
-    .kbd {
-      display: inline-block;
-      padding: 2px 6px;
-      border: 1px solid #334155;
-      border-bottom-width: 3px;
-      border-radius: 6px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      color: #93c5fd;
-      background: rgba(15, 23, 42, 0.6);
-      font-size: 0.75rem;
-    }
-
-    @media (max-width: 860px) {
-      .grid { grid-template-columns: 1fr; }
-      .scan-panel { border-left: none; padding-left: 0; }
-    }
-  </style>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>ACAT - Academic Credit Authenticity Tester</title>
+  <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div class="title">Document Upload & Smart Scan</div>
-      </div>
-      <div class="hint">Drag & drop files or use the button. Max 25 MB per file.</div>
-    </header>
-
-    <div class="card">
-      <div class="section">
-        <div id="upload" class="upload-area" tabindex="0" role="button" aria-label="Upload documents by clicking or dragging files here">
-          <div class="upload-content">
-            <h3 style="margin:0 0 8px 0;">Drop files here</h3>
-            <p class="hint">Accepted: PDF, DOCX, XLSX, PPTX, TXT, JPG, PNG</p>
-            <div class="upload-actions">
-              <button id="browseBtn" class="btn btn-primary">Browse files</button>
-              <button id="clearBtn" class="btn btn-secondary">Clear</button>
-              <input id="fileInput" type="file" multiple aria-hidden="true" style="display:none"
-                     accept=".pdf,.docx,.xlsx,.pptx,.txt,.jpg,.jpeg,.png" />
-            </div>
-          </div>
+  <div class="bg-animated"></div>
+  <main class="hero-section">
+    <h1>
+      <span class="cat-emote">🐈</span> 
+      <span class="brand">ACAT</span>
+      <span class="subtitle-anim">(Academic Credit Authenticity Tester)</span>
+    </h1>
+    <p class="hero-desc">Verify and track academic credits, signatures, marksheets, and certificates with advanced AI-powered detection and blockchain-based storage.</p>
+    <div class="features-illustration">
+      <section class="feature feature-upload">
+        <div class="icon-anim">
+          <!-- Upload SVG -->
+          <svg width="80" height="80" viewBox="0 0 64 64" fill="none">
+            <rect x="7" y="7" width="50" height="50" fill="#e6eafd" stroke="#574be7" stroke-width="2.5" rx="13"/>
+            <path d="M32 42V22m0 0-7 7m7-7 7 7" stroke="#574be7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
-
-        <div id="fileList" class="file-list" aria-live="polite"></div>
-      </div>
-
-      <div class="section scan-panel">
-        <div class="scan-header">
-          <div class="status"><span id="statusDot" class="dot"></span><span id="statusText">Idle</span></div>
-          <div>
-            <button id="scanBtn" class="btn btn-primary">Scan now</button>
-          </div>
+        <div>
+          <h3>Upload or Bulk Import Credits</h3>
+          <p>
+            Institutes upload one or multiple certificates. <span class="hi-anim">·</span>
+            Old or new credits are digitized instantly!
+          </p>
         </div>
-
-        <div class="list">
-          <div class="list-item">
-            <h4>Scan summary</h4>
-            <p id="summaryText">No files scanned yet.</p>
-          </div>
-          <div class="list-item">
-            <h4>Flags & detections</h4>
-            <p id="flagsText">—</p>
-          </div>
-          <div class="list-item">
-            <h4>Quick tips</h4>
-            <p>Rename suspicious files, avoid macros, and verify sources before opening. Large files may take longer to hash.</p>
-          </div>
+      </section>
+      <section class="feature feature-extract">
+        <div class="icon-anim">
+          <!-- OCR SVG -->
+          <svg width="80" height="80" viewBox="0 0 64 64" fill="none">
+            <rect x="10" y="13" width="44" height="38" rx="10" fill="#fef7cd"/>
+            <rect x="15" y="18" width="8" height="8" rx="2" fill="#efd34c"/>
+            <rect x="27" y="18" width="22" height="3" rx="1.5" fill="#fae981"/>
+            <rect x="27" y="23" width="22" height="3" rx="1.5" fill="#fae981"/>
+            <rect x="15" y="29" width="34" height="3" rx="1.5" fill="#fae981"/>
+            <rect x="15" y="35" width="20" height="3" rx="1.5" fill="#fae981"/>
+          </svg>
         </div>
-      </div>
-
-      <div class="footer">
-        <div class="hint">Pro tip: Press <span class="kbd">Space</span> to trigger scan when focused.</div>
-        <div class="hint">Client-side hashing only. No data leaves your browser.</div>
-      </div>
+        <div>
+          <h3>Extract Signatures, Photos, & Text</h3>
+          <p>
+            Advanced <b>OCR</b> & AI identify all critical info—photos, logos, marks, even the tiniest signatures <span class="sparkle">✨</span>
+          </p>
+        </div>
+      </section>
+      <section class="feature feature-uik">
+        <div class="icon-anim">
+          <!-- QR/Unique Key SVG -->
+          <svg width="80" height="80" viewBox="0 0 64 64" fill="none">
+            <rect x="14" y="14" width="36" height="36" rx="9" fill="#e0ffe8" stroke="#18bd70" stroke-width="2"/>
+            <rect x="22" y="22" width="20" height="20" rx="5" fill="#bbf9c8"/>
+            <rect x="29" y="29" width="6" height="6" rx="2" fill="#11c37e"/>
+            <rect x="18" y="35" width="7" height="4" rx="2" fill="#11c37e"/>
+            <rect x="39" y="19" width="7" height="7" rx="2" fill="#11c37e"/>
+          </svg>
+        </div>
+        <div>
+          <h3>Unique Identification QR</h3>
+          <p>
+            Each document gets a tamper-proof <b>UIK</b>—instantly scannable. Blockchain-backed authenticity!
+          </p>
+        </div>
+      </section>
+      <section class="feature feature-store">
+        <div class="icon-anim">
+          <!-- Blockchain SVG -->
+          <svg width="80" height="80" viewBox="0 0 64 64" fill="none">
+            <rect x="9" y="35" width="14" height="14" rx="2" fill="#d3eaff"/>
+            <rect x="41" y="9" width="14" height="14" rx="2" fill="#bee2ff"/>
+            <rect x="41" y="41" width="14" height="14" rx="2" fill="#bee2ff"/>
+            <rect x="27" y="23" width="10" height="10" rx="2" fill="#60b1f3"/>
+            <path d="M23 42 L32 33 L50 41" stroke="#3490e5" stroke-width="2" stroke-linecap="round"/>
+            <path d="M16 42 L16 37 M16 37 L32 33 M50 18 L32 33 M50 18 L50 41" stroke="#88b6e7" stroke-width="2.5" opacity="0.65"/>
+          </svg>
+        </div>
+        <div>
+          <h3>Immutable Storage</h3>
+          <p>
+            Graphics, text, and UIK are saved securely in a hybrid blockchain database!
+          </p>
+        </div>
+      </section>
+      <section class="feature feature-verify">
+        <div class="icon-anim">
+          <!-- Shield/Verify SVG -->
+          <svg width="80" height="80" viewBox="0 0 64 64" fill="none">
+            <path d="M32 12 L56 20 V36c0 12-9.5 20-24 24C17.5 56 8 48 8 36V20Z" fill="#c7fff2" stroke="#03cab5" stroke-width="2"/>
+            <path d="M44 34l-8.1 8.5a2.5 2.5 0 01-3.8-.4l-4-5.5" stroke="#05b697" stroke-width="2.3" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h3>Instant AI Verification</h3>
+          <p>
+            Anyone can upload or scan for tampering in seconds. <br /><span class="check-mark">✔️</span> See tampered faces, marks, or signatures instantly!
+          </p>
+        </div>
+      </section>
     </div>
-  </div>
-
-  <script>
-    // Configuration
-    const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
-    const ACCEPTED_TYPES = [
-      "application/pdf",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-      "text/plain",
-      "image/jpeg",
-      "image/png"
-    ];
-    const SUSPICIOUS_NAME_PATTERNS = [
-      /passwords?/i,
-      /credential/i,
-      /secret/i,
-      /backup/i,
-      /wallet/i,
-      /seed/i,
-      /invoice.*\.exe$/i,
-      /\.js$/i,
-      /\.bat$/i,
-      /\.vbs$/i,
-      /\.scr$/i,
-      /\.dll$/i
-    ];
-    const PII_REGEXES = {
-      email: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g,
-      phone: /\b(?:\+?\d{1,3}[- ]?)?(?:\d{10}|\d{3}[- ]\d{3}[- ]\d{4})\b/g,
-      panLike: /\b[A-Z]{5}\d{4}[A-Z]\b/g, // example pattern similar to PAN format
-      aadhaarLike: /\b\d{4}\s?\d{4}\s?\d{4}\b/g
-    };
-
-    // State
-    const state = {
-      files: [],
-      results: []
-    };
-
-    // Elements
-    const uploadArea = document.getElementById("upload");
-    const fileInput = document.getElementById("fileInput");
-    const browseBtn = document.getElementById("browseBtn");
-    const clearBtn = document.getElementById("clearBtn");
-    const fileList = document.getElementById("fileList");
-    const scanBtn = document.getElementById("scanBtn");
-    const statusDot = document.getElementById("statusDot");
-    const statusText = document.getElementById("statusText");
-    const summaryText = document.getElementById("summaryText");
-    const flagsText = document.getElementById("flagsText");
-
-    // Utility: format bytes
-    function formatBytes(bytes) {
-      const units = ["B", "KB", "MB", "GB"];
-      let i = 0, num = bytes;
-      while (num >= 1024 && i < units.length - 1) { num /= 1024; i++; }
-      return `${num.toFixed(num < 10 && i > 0 ? 2 : 0)} ${units[i]}`;
-    }
-
-    // Utility: compute SHA-256 using Web Crypto
-    async function sha256(file) {
-      const buf = await file.arrayBuffer();
-      const hashBuf = await crypto.subtle.digest("SHA-256", buf);
-      const hashArr = Array.from(new Uint8Array(hashBuf));
-      return hashArr.map(b => b.toString(16).padStart(2, "0")).join("");
-    }
-
-    // Utility: basic text extraction (only for text files & image alt names)
-    async function extractText(file) {
-      if (file.type === "text/plain") {
-        return await file.text();
-      }
-      // For other types, we won't parse binary here; return empty text.
-      return "";
-    }
-
-    // Rendering the file list
-    function renderFiles() {
-      fileList.innerHTML = "";
-      state.files.forEach((file, index) => {
-        const item = document.createElement("div");
-        item.className = "file-item";
-
-        const icon = document.createElement("div");
-        icon.className = "file-icon";
-        icon.textContent = (file.name.split(".").pop() || "?").slice(0, 3).toUpperCase();
-
-        const info = document.createElement("div");
-        const name = document.createElement("div");
-        name.className = "file-name";
-        name.textContent = file.name;
-        const meta = document.createElement("div");
-        meta.className = "file-meta";
-        meta.textContent = `${formatBytes(file.size)} • ${file.type || "unknown"}`;
-
-        const progress = document.createElement("div");
-        progress.className = "progress";
-        const bar = document.createElement("span");
-        progress.appendChild(bar);
-
-        info.appendChild(name);
-        info.appendChild(meta);
-        info.appendChild(progress);
-
-        const actions = document.createElement("div");
-        actions.className = "actions";
-
-        const tag = document.createElement("span");
-        tag.className = "tag";
-        tag.textContent = "Queued";
-
-        const removeBtn = document.createElement("button");
-        removeBtn.className = "btn btn-secondary";
-        removeBtn.textContent = "Remove";
-        removeBtn.addEventListener("click", () => {
-          state.files.splice(index, 1);
-          renderFiles();
-        });
-
-        actions.appendChild(tag);
-        actions.appendChild(removeBtn);
-
-        item.appendChild(icon);
-        item.appendChild(info);
-        item.appendChild(actions);
-        fileList.appendChild(item);
-
-        // Attach progress element to file object (for updates)
-        file._progressBar = bar;
-        file._tag = tag;
-      });
-    }
-
-    function setStatus(status, tone = "") {
-      statusText.textContent = status;
-      statusDot.className = "dot " + tone;
-    }
-
-    // File validation
-    function validateFile(file) {
-      const errors = [];
-      if (file.size > MAX_FILE_SIZE) errors.push(`Too large (${formatBytes(file.size)}). Max 25 MB.`);
-      if (ACCEPTED_TYPES.indexOf(file.type) === -1) errors.push(`Unsupported type (${file.type || "unknown"}).`);
-      return errors;
-    }
-
-    // Suspicious name check
-    function checkNameSuspicion(name) {
-      return SUSPICIOUS_NAME_PATTERNS.filter(rx => rx.test(name));
-    }
-
-    // PII detection (very basic)
-    function detectPII(text) {
-      const findings = [];
-      Object.entries(PII_REGEXES).forEach(([label, rx]) => {
-        const matches = text.match(rx);
-        if (matches && matches.length) {
-          findings.push({ label, count: matches.length });
-        }
-      });
-      return findings;
-    }
-
-    async function sendToServer(file) {
-      try {
-        const fd = new FormData();
-        fd.append("file", file, file.name);
-        const resp = await fetch("/api/scan", {
-          method: "POST",
-          body: fd
-        });
-        if (!resp.ok) {
-          const txt = await resp.text();
-          throw new Error(`Server error ${resp.status}: ${txt}`);
-        }
-        return await resp.json();
-      } catch (err) {
-        console.error("sendToServer error:", err);
-        return { error: String(err) };
-      }
-    }
-
-    async function scanFile(file) {
-      file._tag.textContent = "Hashing...";
-      file._progressBar.style.width = "10%";
-      const errors = validateFile(file);
-      if (errors.length) {
-        file._tag.textContent = "Rejected";
-        file._tag.style.color = "#fca5a5";
-        file._progressBar.style.width = "100%";
-        return { name: file.name, status: "rejected", errors };
-      }
-      const suspicious = checkNameSuspicion(file.name);
-      if (suspicious.length) {
-        file._tag.textContent = "Suspicious name";
-        file._tag.style.color = "#f59e0b";
-      }
-      const hash = await sha256(file);
-      file._progressBar.style.width = "35%";
-      const localText = await extractText(file);
-      let piiFindings = [];
-      if (localText) {
-        file._tag.textContent = "Content check";
-        file._progressBar.style.width = "45%";
-        piiFindings = detectPII(localText);
-      }
-      file._tag.textContent = "Uploading to server (OCR)…";
-      file._progressBar.style.width = "60%";
-      const serverResp = await sendToServer(file);
-      if (serverResp?.error) {
-        file._tag.textContent = "Server error";
-        file._tag.style.color = "#fca5a5";
-        file._progressBar.style.width = "100%";
-        return {
-          name: file.name,
-          status: "server_error",
-          error: serverResp.error,
-          hash,
-          suspiciousName: suspicious.map(r => r.toString()),
-          pii: piiFindings
-        };
-      }
-      file._progressBar.style.width = "95%";
-      file._tag.textContent = "Scanned";
-      file._tag.style.color = "#86efac";
-      file._progressBar.style.width = "100%";
-      return {
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        hash,
-        suspiciousName: suspicious.map(r => r.toString()),
-        pii: piiFindings,
-        ocr_text: serverResp?.ocr_text ?? null,
-        fields: serverResp?.fields ?? null,
-        ai_verdict: serverResp?.ai_verdict ?? null
-      };
-    }
-
-    // Aggregate summary
-    function renderSummary(results) {
-      if (!results.length) {
-        summaryText.textContent = "No files scanned yet.";
-        flagsText.textContent = "—";
-        return;
-      }
-
-      const total = results.length;
-      const rejected = results.filter(r => r.status === "rejected").length;
-      const suspicious = results.filter(r => r.suspiciousName && r.suspiciousName.length).length;
-      const piiHits = results.reduce((acc, r) => acc + (r.pii ? r.pii.reduce((s, x) => s + x.count, 0) : 0), 0);
-
-      summaryText.textContent =
-        `Scanned ${total} file(s): ${rejected} rejected, ${suspicious} flagged for name, ${piiHits} potential PII occurrences.`;
-
-      if (rejected || suspicious || piiHits) {
-        setStatus("Scan finished with warnings", "warn");
-      } else {
-        setStatus("All clear", "clean");
-      }
-
-      const lines = [];
-      results.forEach(r => {
-        if (r.status === "rejected") {
-          lines.push(`• ${r.name}: Rejected — ${r.errors.join("; ")}`);
-          return;
-        }
-        if (r.suspiciousName?.length) {
-          lines.push(`• ${r.name}: Suspicious name pattern(s) detected`);
-        }
-        if (r.pii?.length) {
-          const details = r.pii.map(p => `${p.label}(${p.count})`).join(", ");
-          lines.push(`• ${r.name}: Possible PII — ${details}`);
-        }
-        lines.push(`• ${r.name}: SHA-256 ${r.hash.slice(0, 16)}…`);
-      });
-
-      flagsText.textContent = lines.length ? lines.join("\n") : "No flags.";
-    }
-
-    // Event wiring
-    browseBtn.addEventListener("click", () => fileInput.click());
-    clearBtn.addEventListener("click", () => {
-      state.files = [];
-      state.results = [];
-      renderFiles();
-      renderSummary([]);
-      setStatus("Idle", "");
-    });
-
-    fileInput.addEventListener("change", (e) => {
-      const newFiles = Array.from(e.target.files);
-      state.files.push(...newFiles);
-      renderFiles();
-      setStatus("Files added", "running");
-      e.target.value = ""; // reset input
-    });
-
-    // Drag & drop
-    ["dragenter", "dragover"].forEach(evt => {
-      uploadArea.addEventListener(evt, (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        uploadArea.classList.add("drag-over");
-      });
-    });
-    ["dragleave", "drop"].forEach(evt => {
-      uploadArea.addEventListener(evt, (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        uploadArea.classList.remove("drag-over");
-      });
-    });
-    uploadArea.addEventListener("drop", (e) => {
-      const newFiles = Array.from(e.dataTransfer.files || []);
-      state.files.push(...newFiles);
-      renderFiles();
-      setStatus("Files added", "running");
-    });
-
-    // Click to open dialog
-    uploadArea.addEventListener("click", () => fileInput.click());
-
-    // Keyboard accessibility
-    uploadArea.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        fileInput.click();
-      }
-    });
-
-    // Scan trigger
-    scanBtn.addEventListener("click", async () => {
-      if (!state.files.length) {
-        setStatus("No files to scan", "danger");
-        summaryText.textContent = "Add files to begin scanning.";
-        flagsText.textContent = "—";
-        return;
-      }
-
-      setStatus("Scanning…", "running");
-      const results = [];
-      for (const file of state.files) {
-        const res = await scanFile(file);
-        results.push(res);
-        alert(
-          "File: " + res.name +
-          "\n\nOCR Text:\n" + (res.ocr_text || "(no OCR result)") +
-          "\n\nExtracted Fields:\n" + JSON.stringify(res.fields || {}, null, 2) +
-          "\n\nAI Verdict:\n" + JSON.stringify(res.ai_verdict || {}, null, 2)
-        );
-        await new Promise(r => setTimeout(r, 120)); // small delay for UX
-      }
-      state.results = results;
-      renderSummary(results);
-    });
-
-    // Quick scan shortcut when button focused
-    scanBtn.addEventListener("keydown", (e) => {
-      if (e.key === " ") {
-        e.preventDefault();
-        scanBtn.click();
-      }
-    });
-  </script>
+    <div class="cta-area">
+      <a href="upload_scan.html" class="cta-btn">Try Upload & Scan Demo</a>
+      <a href="verify_document.html" class="cta-btn cta-alt">Try Verify Demo</a>
+    </div>
+  </main>
+  <footer class="main-footer">
+    <span class="cat-anim">🐈</span>
+    <b>NXT WAVE AI BUILDATHON</b> &mdash; ACAT: Academic Credit Authenticity Tester
+  </footer>
+  <script src="static/index.js"></script>
 </body>
 </html>
-
