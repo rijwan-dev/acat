@@ -8,7 +8,6 @@ import uuid
 from werkzeug.utils import secure_filename
 
 from .services.ocr import extract_document_text, extract_fields
-from .services.ai import analyze_document
 from .services.uploader import AcatUploader
 from .services.verifier import AcatVerifier
 from .services.db_manager import AcatDatabase
