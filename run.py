@@ -5,7 +5,7 @@ app = create_app()
 if __name__ == "__main__":
     # Run with HTTPS using self-signed certs
     app.run(
-        host="127.0.0.1",
+        host="0.0.0.0",
         port=433,
         # ssl_context=("certs/cert.pem", "certs/key.pem")
     )
