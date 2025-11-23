@@ -3,7 +3,10 @@ import os
 from flask import Flask
 
 def create_app(config_class="config.DevelopmentConfig"):
-    app = Flask(__name__)
+    app = Flask(__name__,
+        static_folder="static",
+        template_folder="templates"
+    )
     app.config.from_object(config_class)
 
     upload_dir = os.path.join(app.root_path, "uploads")
@@ -17,7 +20,4 @@ def create_app(config_class="config.DevelopmentConfig"):
 
     app.register_blueprint(main)
     return app
-
-
-
 
