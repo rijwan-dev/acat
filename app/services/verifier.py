@@ -1,6 +1,6 @@
 import json
 from typing import Any, Dict, Optional, Tuple, List
-from db_manager import AcatDatabase
+from .db_manager import AcatDatabase
 
 class AcatVerifier:
     """

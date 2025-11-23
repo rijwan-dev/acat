@@ -7,8 +7,11 @@ import uuid
 
 from werkzeug.utils import secure_filename
 
-from .services.ai import analyze_document
 from .services.ocr import extract_document_text, extract_fields
+from .services.ai import analyze_document
+from .services.uploader import AcatUploader
+from .services.verifier import AcatVerifier
+from .services.db_manager import AcatDatabase
 
 main = Blueprint("main", __name__)
 url = "http://172.20.213.4:11500/api/chat"
@@ -90,51 +93,6 @@ The JSON must follow this structure:
 }
 """
 
-# json_schema = """
-# You are to output ONLY valid JSON.
-# Do not include explanations, comments, or extra text.
-# The JSON must follow this structure:
-
-# {
-#   "serial_no": "",
-#   "aadhaar_no": "",
-#   "enrolment_no": "",
-#   "roll_no": "",
-#   "board": "",
-#   "certification": "",
-#   "exam": "",
-#   "certificate_type": "",
-#   "student": {
-#     "name": "",
-#     "father_name": "",
-#     "mother_name": "",
-#     "date_of_birth": "",
-#     "school": ""
-#   },
-#   "exam_details": {
-#     "month_year": "",
-#     "location": ""
-#   },
-#   "marks": [
-#     {
-#       "subject": "",
-#       "marks_obtained": 0,
-#       "minimum_pass_marks": 0,
-#       "maximum_marks": 0,
-#       "grade": "",
-#       "grade_point": 0
-#     }
-#   ],
-#   "total_marks_obtained": 0,
-#   "total_maximum_marks": 0,
-#   "gpa": 0.0,
-#   "general_awareness_life_skills_grade": "",
-#   "co_curricular_activity_grade": "",
-#   "date_issued": "",
-#   "date_dated": ""
-# }
-# """
-
 def unique_filename(original_name: str):
     ext = original_name.split(".")[-1]
     return f"{uuid.uuid4().hex}.{ext}"
@@ -190,13 +148,16 @@ def upload_doc():
     with open(save_path, "rb") as src:
         text = extract_document_text(src)
     parsed_json = parse_document(text)
-    json_path = save_path + ".json"
-    with open(json_path, "w", encoding="utf-8") as fp:
-        json.dump(parsed_json, fp, indent=2)
+    uploader = AcatUploader()
+    exam_id = uploader.upload(parsed_json)
+    uploader.close()
+
+    if exam_id is None:
+        return jsonify({"status": "failed", "reason": "Invalid JSON structure"}), 400
 
     return jsonify({
         "status": "success",
-        "filename": new_name,
+        "exam_id": exam_id,
         "parsed": parsed_json
     })
 
@@ -207,7 +168,7 @@ def verify_doc():
     f = request.files["file"]
     if f.filename == "":
         return jsonify({"error": "Empty filename"}), 400
-    
+
     safe_original = secure_filename(f.filename)
     temp_path = os.path.join(current_app.config["directory_temp"], safe_original)
     f.save(temp_path)
@@ -215,18 +176,15 @@ def verify_doc():
     with open(temp_path, "rb") as src:
         text = extract_document_text(src)
     parsed_json = parse_document(text)
-    matches = []
-    db_folder = current_app.config["directory_upload"]
 
-    for filename in os.listdir(db_folder):
-        if filename.endswith(".json"):
-            stored_data = json.load(open(os.path.join(db_folder, filename)))
-            if stored_data == parsed_json:
-                matches.append(filename)
+    verifier = AcatVerifier()
+    result = verifier.check(parsed_json)
+    verifier.close()
 
     return jsonify({
-        "verified": len(matches) > 0,
-        "matches": matches,
+        "verified": result["exists"],
+        "changed": result["changed"],
+        "changes": result["changes"],
         "parsed": parsed_json
     })
 
@@ -244,6 +202,5 @@ def login():
 @main.route("/upload")
 def upload():
     return render_template("upload.html")
-
 
 
