@@ -47,12 +47,12 @@ function formatSize(bytes) {
   return `${(bytes/1024/1024).toFixed(2)} MB`;
 }
 
-
 function showVerificationSuccess(data) {
   resultBox.style.display = "block";
   resultMessage.innerHTML = `
     <b>Verified!</b><br>
-    Document matched with record: ${data.matches[0]}
+    Record was found in database.<br>
+    ${data.changed ? "Differences: " + data.changes.join("<br>") : "No differences detected."}
   `;
 }
 
@@ -73,7 +73,7 @@ verifyBtn.addEventListener("click", async () => {
     body: form
   });
   const data = await res.json();
-  if (data.verified) {
+  if (data.exists) {
     showVerificationSuccess(data);
   } else {
     showVerificationFail(data);

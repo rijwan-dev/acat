@@ -29,7 +29,7 @@ class AcatUploader:
 
         # Validate Subjects
         subjects = data["Subjects"]
-        if not isinstance(subjects, list) or len(subjects) != 8:
+        if not isinstance(subjects, list) or len(subjects) == 0:
             return False
 
         subject_keys = {"Code", "Name", "Theory", "Practical"}

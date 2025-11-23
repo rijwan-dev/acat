@@ -24,18 +24,34 @@ function sendResetLink() {
   msg.style.color = "mediumseagreen";
   msg.textContent = "A password reset instruction will be sent if this User ID exists.";
 }
+// document.querySelector('.login-form').addEventListener('submit', function(e){
+//   e.preventDefault();
+//   var userID = document.getElementById('userID').value.trim();
+//   var pwd = document.getElementById('password').value.trim();
+//   if(!userID || !pwd)
+//     return;
+//   document.getElementById('loginCard').classList.add('animate-login-success');
+//   setTimeout(function(){
+//     alert("Demo only:\nUserID: " + userID + "\nPassword: " + pwd + "\n(You may redirect, validate or call API here!)");
+//     document.getElementById('loginCard').classList.remove('animate-login-success');
+//   },500);
+// });
+
 document.querySelector('.login-form').addEventListener('submit', function(e){
-  e.preventDefault();
-  var userID = document.getElementById('userID').value.trim();
-  var pwd = document.getElementById('password').value.trim();
-  if(!userID || !pwd)
-    return;
-  document.getElementById('loginCard').classList.add('animate-login-success');
-  setTimeout(function(){
-    alert("Demo only:\nUserID: " + userID + "\nPassword: " + pwd + "\n(You may redirect, validate or call API here!)");
-    document.getElementById('loginCard').classList.remove('animate-login-success');
-  },500);
+e.preventDefault();
+
+const user = document.getElementById('userID').value.trim();
+const pass = document.getElementById('password').value.trim();
+
+// SUPER UNSAFE HARDCODED LOGIN FOR FLASK DEMO
+if (user === "admin" && pass === "admin") {
+alert("Login successful! Redirecting…");
+window.location.href = "/upload";   // Flask route redirect
+} else {
+alert("Invalid login. Only username/password 'admin' works.");
+}
 });
+
 
 // Animate login card on submit
 const style = document.createElement('style');
