@@ -139,10 +139,6 @@ def unique_filename(original_name: str):
     ext = original_name.split(".")[-1]
     return f"{uuid.uuid4().hex}.{ext}"
 
-@main.route("/")
-def index():
-    return render_template("index.html")
-
 def parse_document(text):
     payload = {
         "model": "llama3.1",
@@ -233,6 +229,21 @@ def verify_doc():
         "matches": matches,
         "parsed": parsed_json
     })
+
+@main.route("/")
+def index():
+    return render_template("index.html")
+    
+@main.route("/verify")
+def verify():
+    return render_template("verify.html")
+
+@main.route("/login")
+def login():
+    return render_template("login.html")
+@main.route("/upload")
+def upload():
+    return render_template("upload.html")
 
 
 
