@@ -47,31 +47,65 @@ function formatSize(bytes) {
   return `${(bytes/1024/1024).toFixed(2)} MB`;
 }
 
-// VERIFY BUTTON & ANIMATION DEMO
-verifyBtn.addEventListener('click', function() {
-  if(!selectedFile) return;
-  hideResult();
-  progressContainer.style.display = 'block';
-  progressInner.style.width = '0%';
-  progressText.textContent = "Starting verification...";
 
-  // Animate progress bar demo + fake result
-  let progress = 0;
-  function advance() {
-    if(progress >= 100) {
-      progressInner.style.width = '100%';
-      progressText.textContent = "Finishing...";
-      setTimeout(() => showResult(), 650);
-      return;
-    }
-    progress += Math.random()*23+12;
-    if(progress > 100) progress = 100;
-    progressInner.style.width = `${progress}%`;
-    progressText.textContent = `Verifying document... (${Math.floor(progress)}%)`;
-    setTimeout(advance, 370 + Math.random()*310);
+function showVerificationSuccess(data) {
+  resultBox.style.display = "block";
+  resultMessage.innerHTML = `
+    <b>Verified!</b><br>
+    Document matched with record: ${data.matches[0]}
+  `;
+}
+
+function showVerificationFail(data) {
+  resultBox.style.display = "block";
+  resultMessage.innerHTML = `
+    <b>Not Verified!</b><br>
+    No matching record found.<br>
+  `;
+}
+
+verifyBtn.addEventListener("click", async () => {
+  const form = new FormData();
+  form.append("file", selectedFile);
+  progressText.textContent = "Verifying...";
+  const res = await fetch("/api/verify_doc", {
+    method: "POST",
+    body: form
+  });
+  const data = await res.json();
+  if (data.verified) {
+    showVerificationSuccess(data);
+  } else {
+    showVerificationFail(data);
   }
-  advance();
 });
+
+
+// // VERIFY BUTTON & ANIMATION DEMO
+// verifyBtn.addEventListener('click', function() {
+//   if(!selectedFile) return;
+//   hideResult();
+//   progressContainer.style.display = 'block';
+//   progressInner.style.width = '0%';
+//   progressText.textContent = "Starting verification...";
+
+//   // Animate progress bar demo + fake result
+//   let progress = 0;
+//   function advance() {
+//     if(progress >= 100) {
+//       progressInner.style.width = '100%';
+//       progressText.textContent = "Finishing...";
+//       setTimeout(() => showResult(), 650);
+//       return;
+//     }
+//     progress += Math.random()*23+12;
+//     if(progress > 100) progress = 100;
+//     progressInner.style.width = `${progress}%`;
+//     progressText.textContent = `Verifying document... (${Math.floor(progress)}%)`;
+//     setTimeout(advance, 370 + Math.random()*310);
+//   }
+//   advance();
+// });
 
 function hideProgress() {
   progressContainer.style.display = 'none';

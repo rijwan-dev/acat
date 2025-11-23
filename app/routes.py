@@ -11,7 +11,7 @@ from .services.ai import analyze_document
 from .services.ocr import extract_document_text, extract_fields
 
 main = Blueprint("main", __name__)
-url = "http://192.168.0.118:11500/api/chat"
+url = "http://172.20.213.4:11500/api/chat"
 
 json_schema = """
 You are to output ONLY valid JSON.
@@ -165,7 +165,7 @@ def scan_document():
     if not f:
         return jsonify({"error": "No file uploaded"}), 400
     
-    save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], f.filename)
+    save_path = os.path.join(current_app.config["directory_upload"], f.filename)
     f.seek(0)
     f.save(save_path)
 
@@ -184,7 +184,7 @@ def upload_doc():
 
     safe_original = secure_filename(f.filename)
     new_name = unique_filename(safe_original)
-    save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], new_name)
+    save_path = os.path.join(current_app.config["directory_upload"], new_name)
     f.save(save_path)
 
     with open(save_path, "rb") as src:
@@ -209,14 +209,14 @@ def verify_doc():
         return jsonify({"error": "Empty filename"}), 400
     
     safe_original = secure_filename(f.filename)
-    temp_path = os.path.join(current_app.config["TEMP_FOLDER"], safe_original)
+    temp_path = os.path.join(current_app.config["directory_temp"], safe_original)
     f.save(temp_path)
 
     with open(temp_path, "rb") as src:
         text = extract_document_text(src)
     parsed_json = parse_document(text)
     matches = []
-    db_folder = current_app.config["UPLOAD_FOLDER"]
+    db_folder = current_app.config["directory_upload"]
 
     for filename in os.listdir(db_folder):
         if filename.endswith(".json"):

@@ -42,14 +42,28 @@ function formatSize(bytes) {
   return `${(bytes/1024/1024).toFixed(2)} MB`;
 }
 
-// Upload button action (stub)
-uploadBtn.addEventListener('click', function() {
-  if(selectedFile) {
-    alert('Uploading ' + selectedFile.name + '...\n(Demo: replace with backend upload logic!)');
-    uploadBtn.disabled = true;
-    filePreview.innerHTML = '';
-    selectedFile = null;
-  }
+// // Upload button action (stub)
+// uploadBtn.addEventListener('click', function() {
+//   if(selectedFile) {
+//     alert('Uploading ' + selectedFile.name + '...\n(Demo: replace with backend upload logic!)');
+//     uploadBtn.disabled = true;
+//     filePreview.innerHTML = '';
+//     selectedFile = null;
+//   }
+// });
+
+uploadBtn.addEventListener("click", async () => {
+  const form = new FormData();
+  form.append("file", selectedFile);
+
+  const res = await fetch("/api/upload_doc", {
+    method: "POST",
+    body: form
+  });
+
+  const data = await res.json();
+  console.log(data);
+  alert("Upload Completed!");
 });
 
 // Camera logic
