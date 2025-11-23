@@ -3,9 +3,12 @@ from flask import Blueprint, render_template, request, jsonify, current_app
 import requests
 import os
 import json
+import uuid
 
-from .services.ocr import extract_document_text, extract_fields
+from werkzeug.utils import secure_filename
+
 from .services.ai import analyze_document
+from .services.ocr import extract_document_text, extract_fields
 
 main = Blueprint("main", __name__)
 url = "http://192.168.0.118:11500/api/chat"
@@ -132,6 +135,10 @@ The JSON must follow this structure:
 # }
 # """
 
+def unique_filename(original_name: str):
+    ext = original_name.split(".")[-1]
+    return f"{uuid.uuid4().hex}.{ext}"
+
 @main.route("/")
 def index():
     return render_template("index.html")
@@ -170,5 +177,62 @@ def scan_document():
         text = extract_document_text(stored_file)
     parsed = parse_document(text)
     return jsonify(parsed)
+
+@main.route("/api/upload_doc", methods=["POST"])
+def upload_doc():
+    if "file" not in request.files:
+        return jsonify({"error": "No file uploaded"}), 400
+    f = request.files["file"]
+    if f.filename == "":
+        return jsonify({"error": "Empty filename"}), 400
+
+    safe_original = secure_filename(f.filename)
+    new_name = unique_filename(safe_original)
+    save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], new_name)
+    f.save(save_path)
+
+    with open(save_path, "rb") as src:
+        text = extract_document_text(src)
+    parsed_json = parse_document(text)
+    json_path = save_path + ".json"
+    with open(json_path, "w", encoding="utf-8") as fp:
+        json.dump(parsed_json, fp, indent=2)
+
+    return jsonify({
+        "status": "success",
+        "filename": new_name,
+        "parsed": parsed_json
+    })
+
+@main.route("/api/verify_doc", methods=["POST"])
+def verify_doc():
+    if "file" not in request.files:
+        return jsonify({"error": "No file uploaded"}), 400
+    f = request.files["file"]
+    if f.filename == "":
+        return jsonify({"error": "Empty filename"}), 400
+    
+    safe_original = secure_filename(f.filename)
+    temp_path = os.path.join(current_app.config["TEMP_FOLDER"], safe_original)
+    f.save(temp_path)
+
+    with open(temp_path, "rb") as src:
+        text = extract_document_text(src)
+    parsed_json = parse_document(text)
+    matches = []
+    db_folder = current_app.config["UPLOAD_FOLDER"]
+
+    for filename in os.listdir(db_folder):
+        if filename.endswith(".json"):
+            stored_data = json.load(open(os.path.join(db_folder, filename)))
+            if stored_data == parsed_json:
+                matches.append(filename)
+
+    return jsonify({
+        "verified": len(matches) > 0,
+        "matches": matches,
+        "parsed": parsed_json
+    })
+
 
 

@@ -1,11 +1,7 @@
 from app import create_app
 
-app = create_app()
-
 if __name__ == "__main__":
-    # Run with HTTPS using self-signed certs
-    app.run(
-        host="0.0.0.0",
-        port=433,
-        # ssl_context=("certs/cert.pem", "certs/key.pem")
-    )
+    app = create_app()
+    app.run(debug=True, host="0.0.0.0", port=5000)
+
+
