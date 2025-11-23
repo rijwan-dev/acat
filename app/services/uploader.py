@@ -79,9 +79,9 @@ class AcatUploader:
     def close(self):
         self.db.close()
 
-# Example usage:
-if __name__ == "__main__":
-    uploader = ExamDataUploader()
-    # Assume json_data is a variable with the structure you described (Python dict)
-    # exam_id = uploader.upload(json_data)
-    uploader.close()
+# # Example usage:
+# if __name__ == "__main__":
+#     uploader = ExamDataUploader()
+#     # Assume json_data is a variable with the structure you described (Python dict)
+#     # exam_id = uploader.upload(json_data)
+#     uploader.close()
