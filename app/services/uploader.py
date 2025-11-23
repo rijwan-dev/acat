@@ -32,28 +32,62 @@ class AcatUploader:
         if not isinstance(subjects, list) or len(subjects) == 0:
             return False
 
-        subject_keys = {"Code", "Name", "Theory", "Practical"}
+        subject_keys = {"Code", "Name", "Theory"}
         theory_keys = {"Max", "Min", "Secured"}
         practical_keys = {"Max", "Min", "Secured"}
 
         for subj in subjects:
-            if not isinstance(subj, dict) or not subject_keys.issubset(subj):
+            # Must have Code, Name, Theory. Practical is optional.
+            if not isinstance(subj, dict) or not subject_keys.issubset(subj.keys()):
                 return False
-            # Theory validation
+
+            # Validate theory
             theory = subj["Theory"]
             if not isinstance(theory, dict) or not theory_keys.issubset(theory):
                 return False
             for tfield in theory_keys:
                 if not isinstance(theory[tfield], int):
                     return False
-            # Practical validation (can be None or dict)
-            practical = subj["Practical"]
+
+            # Validate optional practical
+            practical = subj.get("Practical")
             if practical is not None:
                 if not isinstance(practical, dict) or not practical_keys.issubset(practical):
                     return False
                 for pfield in practical_keys:
                     if not isinstance(practical[pfield], int):
                         return False
+
+
+
+        # # Validate Subjects
+        # subjects = data["Subjects"]
+        # if not isinstance(subjects, list) or len(subjects) == 0:
+        #     return False
+
+        # subject_keys = {"Code", "Name", "Theory"}
+        # theory_keys = {"Max", "Min", "Secured"}
+        # practical_keys = {"Max", "Min", "Secured"}
+
+        # for subj in subjects:
+        #     if not isinstance(subj, dict) or not subject_keys.issubset(subj):
+        #         return False
+        #     # Theory validation
+        #     theory = subj["Theory"]
+        #     if not isinstance(theory, dict) or not theory_keys.issubset(theory):
+        #         return False
+        #     for tfield in theory_keys:
+        #         if not isinstance(theory[tfield], int):
+        #             return False
+        #     # Practical validation (can be None or dict)
+        #     # practical = subj["Practical"]
+        #     practical = subj.get("Practical")
+        #     if practical is not None:
+        #         if not isinstance(practical, dict) or not practical_keys.issubset(practical):
+        #             return False
+        #         for pfield in practical_keys:
+        #             if not isinstance(practical[pfield], int):
+        #                 return False
 
         # Validate Result
         result = data["Result"]
